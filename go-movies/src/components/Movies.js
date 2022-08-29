@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Movies() {
   const [movies, setMovies] = useState([]);
@@ -15,7 +16,14 @@ export default function Movies() {
     <>
       <h2>Movies</h2>
 
-      <ul>{movies && movies.map((m) => <li key={m.id}>{m.title}</li>)}</ul>
+      <ul>
+        {movies &&
+          movies.map((m) => (
+            <li key={m.id}>
+              <Link to={`/movies/${m.id}`}>{m.title}</Link>
+            </li>
+          ))}
+      </ul>
     </>
   );
 }
