@@ -11,7 +11,7 @@ export default function Movie(props) {
       title: "The Shawshank Redemption",
       runtime: 150,
     });
-  }, []);
+  }, [id]);
 
   return (
     <>
