@@ -1,10 +1,8 @@
 package main
 
 import (
-	"go-backend/models"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
@@ -20,17 +18,10 @@ func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	movie := models.Movie{
-		ID:          id,
-		Title:       "The Shawshank Redemption",
-		Description: "Great movie",
-		Year:        1995,
-		ReleaseDate: time.Date(1995, 01, 01, 01, 0, 0, 0, time.Local),
-		Runtime:     150,
-		Rating:      5,
-		MPAARating:  "PG-13",
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+	movie, err := app.models.DB.Get(id)
+
+	if err != nil {
+		app.logger.Error("failed to get movie by ID: ", zap.Error(err))
 	}
 
 	if err = app.writeJson(w, http.StatusOK, movie, "movie"); err != nil {
@@ -39,5 +30,32 @@ func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) getAllMovies(w http.ResponseWriter, r *http.Request) {
+	movies, err := app.models.DB.GetAll()
+	if err != nil {
+		app.logger.Error("failed to get all movies: ", zap.Error(err))
+	}
+
+	if err = app.writeJson(w, http.StatusOK, movies, "movies"); err != nil {
+		app.logger.Error("failed to marshal json: ", zap.Error(err))
+	}
+}
+
+// TODO:
+func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// TODO:
+func (app *application) insertMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// TODO:
+func (app *application) updateMovie(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// TODO:
+func (app *application) searchMovies(w http.ResponseWriter, r *http.Request) {
 
 }

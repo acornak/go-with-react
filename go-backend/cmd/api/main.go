@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"flag"
 	"fmt"
+	"go-backend/models"
 	"log"
 	"net/http"
 	"time"
@@ -33,6 +34,7 @@ type AppStatus struct {
 type application struct {
 	config config
 	logger *zap.SugaredLogger
+	models models.Models
 }
 
 func main() {
@@ -57,6 +59,7 @@ func main() {
 	app := &application{
 		config: cfg,
 		logger: logger,
+		models: models.NewModels(db),
 	}
 
 	srv := &http.Server{
@@ -93,53 +96,3 @@ func openDB(cfg config) (*sql.DB, error) {
 
 	return db, nil
 }
-
-// func initDB(logger *zap.SugaredLogger) *sql.DB {
-// 	conn := connectToDB(logger)
-// 	if conn == nil {
-// 		logger.Fatal("can't connect to database")
-// 	}
-
-// 	return conn
-// }
-
-// func connectToDB(logger *zap.SugaredLogger) *sql.DB {
-// 	counts := 0
-
-// 	dsn := os.Getenv("DSN")
-
-// 	for {
-// 		connection, err := openDB(dsn)
-
-// 		if err != nil {
-// 			logger.Info("postgres not yet ready...")
-// 		} else {
-// 			logger.Info("connected to database!")
-// 			return connection
-// 		}
-
-// 		if counts > 10 {
-// 			return nil
-// 		}
-// 		logger.Info("backing off for 1 second")
-// 		time.Sleep(1 * time.Second)
-// 		counts++
-// 		continue
-// 	}
-// }
-
-// func openDB(dsn string) (*sql.DB, error) {
-// 	db, err := sql.Open("pgx", dsn)
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	err = db.Ping()
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return db, nil
-// }
