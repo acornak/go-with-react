@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 
 export default function Genre() {
+  const location = useLocation();
+  const { genreName } = location.state;
   const { genre_id } = useParams();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
@@ -22,24 +24,28 @@ export default function Genre() {
       });
   }, [url]);
 
-  if (!movies) {
-    return <div>No movies in this category...</div>;
-  }
-
   return (
     <>
-      <h2>Movies</h2>
-      <ul>
-        {error ? (
-          <div>Oops, something went wrong...</div>
-        ) : (
-          movies.map((m) => (
-            <li key={m.id}>
-              <Link to={`/movies/${m.id}`}>{m.title}</Link>
-            </li>
-          ))
-        )}
-      </ul>
+      <h2>Genre: {genreName}</h2>
+      {movies ? (
+        <div className="list-group">
+          {error ? (
+            <div>Oops, something went wrong...</div>
+          ) : (
+            movies.map((m) => (
+              <Link
+                to={`/movies/${m.id}`}
+                className="list-group-item list-group-item-action"
+                key={m.id}
+              >
+                {m.title}
+              </Link>
+            ))
+          )}
+        </div>
+      ) : (
+        <div>No movies in this category...</div>
+      )}
     </>
   );
 }

@@ -22,17 +22,21 @@ export default function Movies() {
   return (
     <>
       <h2>Movies</h2>
-      <ul>
+      <div className="list-group">
         {error ? (
           <div>Oops, something went wrong...</div>
         ) : (
           movies.map((m) => (
-            <li key={m.id}>
-              <Link to={`/movies/${m.id}`}>{m.title}</Link>
-            </li>
+            <Link
+              to={`/movies/${m.id}`}
+              className="list-group-item list-group-item-action"
+              key={m.id}
+            >
+              {m.title}
+            </Link>
           ))
         )}
-      </ul>
+      </div>
     </>
   );
 }

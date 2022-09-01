@@ -22,17 +22,22 @@ export default function Genres() {
   return (
     <>
       <h2>Genres:</h2>
-      <ul>
+      <div className="list-group">
         {error ? (
           <div>Ooops, something went wrong...</div>
         ) : (
-          genres.map((m) => (
-            <li key={m.id}>
-              <Link to={`/genre/${m.id}`}>{m.genre_name}</Link>
-            </li>
+          genres.map((g) => (
+            <Link
+              to={`/genre/${g.id}`}
+              state={{ genreName: g.genre_name }}
+              className="list-group-item list-group-item-action"
+              key={g.id}
+            >
+              {g.genre_name}
+            </Link>
           ))
         )}
-      </ul>
+      </div>
     </>
   );
 }
