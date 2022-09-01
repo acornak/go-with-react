@@ -20,20 +20,29 @@ export default function App() {
         <div className="row">
           <div className="col-md-2">
             <nav>
-              <ul className="list-group">
-                <li className="list-group-item">
-                  <Link to="/">Home</Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/movies">Movies</Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/genres">Genres</Link>
-                </li>
-                <li className="list-group-item">
-                  <Link to="/admin">Manage Catalogue</Link>
-                </li>
-              </ul>
+              <div className="list-group">
+                <Link to="/" className="list-group-item list-group-item-action">
+                  Home
+                </Link>
+                <Link
+                  to="/movies"
+                  className="list-group-item list-group-item-action"
+                >
+                  Movies
+                </Link>
+                <Link
+                  to="/genres"
+                  className="list-group-item list-group-item-action"
+                >
+                  Genres
+                </Link>
+                <Link
+                  to="/admin"
+                  className="list-group-item list-group-item-action"
+                >
+                  Manage Catalogue
+                </Link>
+              </div>
             </nav>
           </div>
           <div className="col-md-10">
