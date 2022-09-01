@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-export default function Movies() {
+export default function Genre() {
+  const { genre_id } = useParams();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
-  const url = "http://localhost:4000/v1/movies";
+  const url = `http://localhost:4000/v1/movies/${genre_id}`;
 
   useEffect(() => {
     axios
       .get(url)
       .then((res) => {
+        console.log(res);
         setMovies(res.data.movies);
       })
       .catch((err) => {
@@ -18,6 +21,10 @@ export default function Movies() {
         console.log(err);
       });
   }, [url]);
+
+  if (!movies) {
+    return <div>No movies in this category...</div>;
+  }
 
   return (
     <>

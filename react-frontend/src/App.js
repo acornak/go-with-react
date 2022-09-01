@@ -5,8 +5,8 @@ import Movies from "./components/Movies";
 import Movie from "./components/Movie";
 import Home from "./components/Home";
 import Admin from "./components/Admin";
-import CategoryPage from "./components/CategoryPage";
-import Categories from "./components/Categories";
+import Genres from "./components/Genres";
+import Genre from "./components/Genre";
 
 export default function App() {
   return (
@@ -28,7 +28,7 @@ export default function App() {
                   <Link to="/movies">Movies</Link>
                 </li>
                 <li className="list-group-item">
-                  <Link to="/by-category">Categories</Link>
+                  <Link to="/genres">Genres</Link>
                 </li>
                 <li className="list-group-item">
                   <Link to="/admin">Manage Catalogue</Link>
@@ -42,22 +42,8 @@ export default function App() {
               <Route path="/movies" element={<Movies />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/" element={<Home />} />
-              <Route exact path="/by-category" element={<CategoryPage />} />
-              <Route
-                exact
-                path="/by-category/drama"
-                element={<Categories title="Drama" />}
-              />
-              <Route
-                exact
-                path="/by-category/comedy"
-                element={<Categories title="Comedy" />}
-              />
-              <Route
-                exact
-                path="/by-category/horror"
-                element={<Categories title="Horror" />}
-              />
+              <Route exact path="/genres" element={<Genres />} />
+              <Route exact path="/genre/:genre_id" element={<Genre />} />
             </Routes>
           </div>
         </div>

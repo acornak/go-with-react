@@ -2,16 +2,16 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-export default function Movies() {
-  const [movies, setMovies] = useState([]);
+export default function Genres() {
+  const [genres, setGenres] = useState([]);
   const [error, setError] = useState(false);
-  const url = "http://localhost:4000/v1/movies";
+  const url = "http://localhost:4000/v1/genres";
 
   useEffect(() => {
     axios
       .get(url)
       .then((res) => {
-        setMovies(res.data.movies);
+        setGenres(res.data.genres);
       })
       .catch((err) => {
         setError(true);
@@ -21,14 +21,14 @@ export default function Movies() {
 
   return (
     <>
-      <h2>Movies</h2>
+      <h2>Genres:</h2>
       <ul>
         {error ? (
-          <div>Oops, something went wrong...</div>
+          <div>Ooops, something went wrong...</div>
         ) : (
-          movies.map((m) => (
+          genres.map((m) => (
             <li key={m.id}>
-              <Link to={`/movies/${m.id}`}>{m.title}</Link>
+              <Link to={`/genre/${m.id}`}>{m.genre_name}</Link>
             </li>
           ))
         )}
