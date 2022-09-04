@@ -6,9 +6,9 @@ export default function Movie() {
   const { id } = useParams();
   const [movie, setMovie] = useState([]);
   const [error, setError] = useState(false);
-  const url = `http://localhost:4000/v1/movie/${id}`;
 
   useEffect(() => {
+    const url = `http://localhost:4000/v1/movie/${id}`;
     axios
       .get(url)
       .then((res) => {
@@ -18,7 +18,7 @@ export default function Movie() {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, [id]);
 
   if (error) {
     return <div>Oops, something went wrong...</div>;

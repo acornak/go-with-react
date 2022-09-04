@@ -7,6 +7,7 @@ import Home from "./components/Home";
 import Admin from "./components/Admin";
 import Genres from "./components/Genres";
 import Genre from "./components/Genre";
+import EditMovie from "./components/EditMovie";
 
 export default function App() {
   return (
@@ -37,6 +38,12 @@ export default function App() {
                   Genres
                 </Link>
                 <Link
+                  to="/admin/movie/0"
+                  className="list-group-item list-group-item-action"
+                >
+                  Add movie
+                </Link>
+                <Link
                   to="/admin"
                   className="list-group-item list-group-item-action"
                 >
@@ -50,6 +57,7 @@ export default function App() {
               <Route path="/movies/:id" element={<Movie />} />
               <Route path="/movies" element={<Movies />} />
               <Route path="/admin" element={<Admin />} />
+              <Route path="/admin/movie/:id" element={<EditMovie />} />
               <Route path="/" element={<Home />} />
               <Route exact path="/genres" element={<Genres />} />
               <Route exact path="/genre/:genre_id" element={<Genre />} />

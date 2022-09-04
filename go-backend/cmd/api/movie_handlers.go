@@ -1,12 +1,20 @@
 package main
 
 import (
+	"encoding/json"
+	"go-backend/models"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/julienschmidt/httprouter"
 	"go.uber.org/zap"
 )
+
+type jsonResp struct {
+	OK      bool   `json:"ok"`
+	Message string `json:"message"`
+}
 
 func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
@@ -71,18 +79,71 @@ func (app *application) getMoviesByGenre(w http.ResponseWriter, r *http.Request)
 	}
 }
 
+type MoviePayload struct {
+	ID          string `json:"id"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Year        string `json:"year"`
+	ReleaseDate string `json:"release_date"`
+	Runtime     string `json:"runtime"`
+	Rating      string `json:"rating"`
+	MPAARating  string `json:"mpaa_rating"`
+}
+
+func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
+	var payload MoviePayload
+
+	err := json.NewDecoder(r.Body).Decode(&payload)
+	if err != nil {
+		app.logger.Error("unable to decode movie: ", zap.Error(err))
+	}
+
+	movie := models.Movie{
+		Title:       payload.Title,
+		Description: payload.Description,
+		MPAARating:  payload.MPAARating,
+		CreatedAt:   time.Now(),
+		UpdatedAt:   time.Now(),
+	}
+
+	// TODO: this
+	movie.ID, err = strconv.Atoi(payload.ID)
+	if err != nil {
+		app.logger.Error("unable to decode movie: ", zap.Error(err))
+	}
+
+	movie.ReleaseDate, err = time.Parse("2006-01-02", payload.ReleaseDate)
+	if err != nil {
+		app.logger.Error("unable to decode movie: ", zap.Error(err))
+	}
+	movie.Year = movie.ReleaseDate.Year()
+
+	movie.Runtime, err = strconv.Atoi(payload.Runtime)
+	if err != nil {
+		app.logger.Error("unable to decode movie: ", zap.Error(err))
+	}
+
+	movie.Rating, err = strconv.Atoi(payload.Rating)
+	if err != nil {
+		app.logger.Error("unable to decode movie: ", zap.Error(err))
+	}
+
+	err = app.models.DB.InsertMovie(movie)
+	if err != nil {
+		app.logger.Error("failed insert movie into database: ", zap.Error(err))
+	}
+
+	ok := jsonResp{
+		OK: true,
+	}
+
+	if err = app.writeJson(w, http.StatusOK, ok, "response"); err != nil {
+		app.logger.Error("failed to marshal json: ", zap.Error(err))
+	}
+}
+
 // TODO:
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// TODO:
-func (app *application) insertMovie(w http.ResponseWriter, r *http.Request) {
-
-}
-
-// TODO:
-func (app *application) updateMovie(w http.ResponseWriter, r *http.Request) {
 
 }
 
