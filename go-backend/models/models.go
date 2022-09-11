@@ -43,6 +43,13 @@ type MovieGenre struct {
 	UpdatedAt time.Time `json:"-"`
 }
 
+// type for users
+type User struct {
+	ID       int
+	Email    string
+	Password string
+}
+
 // models with db pool
 func NewModels(db *sql.DB) Models {
 	return Models{

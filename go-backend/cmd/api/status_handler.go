@@ -16,5 +16,4 @@ func (app *application) statusHandler(w http.ResponseWriter, r *http.Request) {
 	if err := app.writeJson(w, http.StatusOK, currentStatus, ""); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
 	}
-
 }

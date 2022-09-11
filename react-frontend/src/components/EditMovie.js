@@ -51,7 +51,7 @@ export default function EditMovie() {
           console.log(err);
         });
     }
-  }, [id]);
+  }, [id, url]);
 
   const handleSubmit = (e) => {
     e.preventDefault();

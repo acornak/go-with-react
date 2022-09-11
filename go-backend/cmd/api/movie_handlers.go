@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"go-backend/models"
 	"net/http"
 	"strconv"
@@ -22,7 +23,7 @@ func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
 		app.logger.Error("invalid id parameter", zap.Error(err))
-		app.errorJson(w, err)
+		app.errorJson(w, errors.New("invalid movie id"))
 		return
 	}
 
@@ -30,10 +31,14 @@ func (app *application) getOneMovie(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		app.logger.Error("failed to get movie by ID: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to ged movie by id"))
+		return
 	}
 
 	if err = app.writeJson(w, http.StatusOK, movie, "movie"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
@@ -41,10 +46,14 @@ func (app *application) getAllMovies(w http.ResponseWriter, r *http.Request) {
 	movies, err := app.models.DB.GetAllMovies()
 	if err != nil {
 		app.logger.Error("failed to get all movies: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to get all movies"))
+		return
 	}
 
 	if err = app.writeJson(w, http.StatusOK, movies, "movies"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
@@ -52,10 +61,14 @@ func (app *application) getAllGenres(w http.ResponseWriter, r *http.Request) {
 	genres, err := app.models.DB.GetAllGenres()
 	if err != nil {
 		app.logger.Error("failed to get all genres: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to get all genres"))
+		return
 	}
 
 	if err = app.writeJson(w, http.StatusOK, genres, "genres"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
@@ -65,17 +78,21 @@ func (app *application) getMoviesByGenre(w http.ResponseWriter, r *http.Request)
 	genreID, err := strconv.Atoi(params.ByName("genre_id"))
 	if err != nil {
 		app.logger.Error("invalid id parameter", zap.Error(err))
-		app.errorJson(w, err)
+		app.errorJson(w, errors.New("invalid id parameter"))
 		return
 	}
 
 	movies, err := app.models.DB.GetAllMovies(genreID)
 	if err != nil {
 		app.logger.Error("failed to get all genres: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to get all genres"))
+		return
 	}
 
 	if err = app.writeJson(w, http.StatusOK, movies, "movies"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
@@ -96,6 +113,8 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 	err := json.NewDecoder(r.Body).Decode(&payload)
 	if err != nil {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to decode movie"))
+		return
 	}
 
 	var movie models.Movie
@@ -104,10 +123,14 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 		id, err := strconv.Atoi(payload.ID)
 		if err != nil {
 			app.logger.Error("unable to decode movie: ", zap.Error(err))
+			app.errorJson(w, errors.New("failed to decode movie id"))
+			return
 		}
 		m, err := app.models.DB.GetMovie(id)
 		if err != nil {
-			app.logger.Error("unable to get movie by ID: ", zap.Error(err))
+			app.logger.Error("failed to get movie by ID: ", zap.Error(err))
+			app.errorJson(w, errors.New("failed to get movie by id"))
+			return
 		}
 
 		movie = *m
@@ -123,28 +146,38 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 	movie.ReleaseDate, err = time.Parse("2006-01-02", payload.ReleaseDate)
 	if err != nil {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to decode release date"))
+		return
 	}
 	movie.Year = movie.ReleaseDate.Year()
 
 	movie.Runtime, err = strconv.Atoi(payload.Runtime)
 	if err != nil {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to decode runtime"))
+		return
 	}
 
 	movie.Rating, err = strconv.Atoi(payload.Rating)
 	if err != nil {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to decode rating"))
+		return
 	}
 
 	if movie.ID == 0 {
 		err = app.models.DB.InsertMovie(movie)
 		if err != nil {
 			app.logger.Error("failed to insert movie into database: ", zap.Error(err))
+			app.errorJson(w, errors.New("failed to insert movie into database"))
+			return
 		}
 	} else {
 		err = app.models.DB.UpdateMovie(movie)
 		if err != nil {
 			app.logger.Error("failed to update movie: ", zap.Error(err))
+			app.errorJson(w, errors.New("failed to update movie"))
+			return
 		}
 	}
 
@@ -154,20 +187,25 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 
 	if err = app.writeJson(w, http.StatusOK, ok, "response"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
-// TODO:
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 	params := httprouter.ParamsFromContext(r.Context())
 
 	id, err := strconv.Atoi(params.ByName("id"))
 	if err != nil {
 		app.logger.Error("unable to decode movie ID: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to decode movie id"))
+		return
 	}
 
 	if err = app.models.DB.DeleteMovie(id); err != nil {
 		app.logger.Error("unable to delete movie: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to delete movie"))
+		return
 	}
 
 	ok := jsonResp{
@@ -176,6 +214,8 @@ func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 
 	if err = app.writeJson(w, http.StatusOK, ok, "response"); err != nil {
 		app.logger.Error("failed to marshal json: ", zap.Error(err))
+		app.errorJson(w, errors.New("failed to marshal json"))
+		return
 	}
 }
 
