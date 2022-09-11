@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
 
 import Input from "./form-inputs/Input";
 import Textarea from "./form-inputs/Textarea";
 import Select from "./form-inputs/Select";
+import Alert from "./ui-components/Alert";
 import "./EditMovie.css";
 
 export default function EditMovie() {
   const { id } = useParams();
   const [error, setError] = useState(false);
   const [movie, setMovie] = useState({
+    id: "",
     title: "",
     release_date: "",
     runtime: "",
@@ -18,17 +22,22 @@ export default function EditMovie() {
     rating: "",
     description: "",
   });
-
+  const [alert, setAlert] = useState({
+    type: "d-none",
+    message: "",
+  });
   const [errors, setErrors] = useState([]);
+  const navigate = useNavigate();
+  const url = `http://localhost:4000/`;
 
   useEffect(() => {
     if (id > 0) {
-      const url = `http://localhost:4000/v1/movie/${id}`;
       axios
-        .get(url)
+        .get(url + `v1/movie/${id}`)
         .then((res) => {
           const release_date = new Date(res.data.movie.release_date);
           setMovie({
+            id: id,
             title: res.data.movie.title,
             release_date: release_date.toISOString().split("T")[0],
             runtime: res.data.movie.runtime,
@@ -95,15 +104,21 @@ export default function EditMovie() {
 
     const data = new FormData(e.target);
     const payload = Object.fromEntries(data.entries());
-    const url = "http://localhost:4000/v1/admin/editmovie";
 
     axios
-      .post(url, JSON.stringify(payload))
+      .post(url + "v1/admin/editmovie", JSON.stringify(payload))
       .then((res) => console.log(res))
       .catch((err) => {
         setError(true);
-        console.log(err);
+        setAlert({
+          type: "alert-danger",
+          message: "Failed to save changes: " + err,
+        });
       });
+
+    if (!error) {
+      navigate("/admin");
+    }
   };
 
   const handleChange = (e) => {
@@ -126,13 +141,48 @@ export default function EditMovie() {
     { id: "NC17", value: "NC17" },
   ];
 
+  const confirmDelete = () => {
+    confirmAlert({
+      title: "Delete movie",
+      message: "Are you sure?",
+      buttons: [
+        {
+          label: "Yes",
+          onClick: () => {
+            axios
+              .get(url + `v1/admin/deletemovie/${id}`)
+              .then((res) => console.log(res))
+              .catch((err) => {
+                setError(true);
+                setAlert({
+                  type: "alert-danger",
+                  message: "Failed to delete movie: " + err,
+                });
+              });
+            navigate("/admin");
+          },
+        },
+        {
+          label: "No",
+          onClick: () => {},
+        },
+      ],
+    });
+  };
+
   if (error) {
-    return <div>Oops, something went wrong...</div>;
+    return (
+      <>
+        <Alert alertType={alert.type} alertMessage={alert.message} />
+        <div>Oops, something went wrong...</div>
+      </>
+    );
   }
 
   return (
     <>
       <h2>Add/Edit Movie</h2>
+      <Alert alertType={alert.type} alertMessage={alert.message} />
       <hr />
       <form method="post" onSubmit={handleSubmit}>
         <input type="hidden" name="id" id="id" value={movie.id} />
@@ -205,11 +255,19 @@ export default function EditMovie() {
         <hr />
 
         <button className="btn btn-primary">Save</button>
+        <Link to="/admin" className="btn btn-warning ms-1">
+          Cancel
+        </Link>
+        {id > 0 && (
+          <a
+            href="#!"
+            onClick={() => confirmDelete()}
+            className="btn btn-danger ms-1"
+          >
+            Delete
+          </a>
+        )}
       </form>
-
-      <div className="mt-3">
-        <pre>{JSON.stringify(movie, null, 3)}</pre>
-      </div>
     </>
   );
 }

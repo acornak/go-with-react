@@ -98,19 +98,27 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
 	}
 
-	movie := models.Movie{
-		Title:       payload.Title,
-		Description: payload.Description,
-		MPAARating:  payload.MPAARating,
-		CreatedAt:   time.Now(),
-		UpdatedAt:   time.Now(),
+	var movie models.Movie
+
+	if payload.ID != "" {
+		id, err := strconv.Atoi(payload.ID)
+		if err != nil {
+			app.logger.Error("unable to decode movie: ", zap.Error(err))
+		}
+		m, err := app.models.DB.GetMovie(id)
+		if err != nil {
+			app.logger.Error("unable to get movie by ID: ", zap.Error(err))
+		}
+
+		movie = *m
+	} else {
+		movie.CreatedAt = time.Now()
 	}
 
-	// TODO: this
-	movie.ID, err = strconv.Atoi(payload.ID)
-	if err != nil {
-		app.logger.Error("unable to decode movie: ", zap.Error(err))
-	}
+	movie.Title = payload.Title
+	movie.Description = payload.Description
+	movie.MPAARating = payload.MPAARating
+	movie.UpdatedAt = time.Now()
 
 	movie.ReleaseDate, err = time.Parse("2006-01-02", payload.ReleaseDate)
 	if err != nil {
@@ -128,9 +136,16 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 		app.logger.Error("unable to decode movie: ", zap.Error(err))
 	}
 
-	err = app.models.DB.InsertMovie(movie)
-	if err != nil {
-		app.logger.Error("failed insert movie into database: ", zap.Error(err))
+	if movie.ID == 0 {
+		err = app.models.DB.InsertMovie(movie)
+		if err != nil {
+			app.logger.Error("failed to insert movie into database: ", zap.Error(err))
+		}
+	} else {
+		err = app.models.DB.UpdateMovie(movie)
+		if err != nil {
+			app.logger.Error("failed to update movie: ", zap.Error(err))
+		}
 	}
 
 	ok := jsonResp{
@@ -144,7 +159,24 @@ func (app *application) editMovie(w http.ResponseWriter, r *http.Request) {
 
 // TODO:
 func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
+	params := httprouter.ParamsFromContext(r.Context())
 
+	id, err := strconv.Atoi(params.ByName("id"))
+	if err != nil {
+		app.logger.Error("unable to decode movie ID: ", zap.Error(err))
+	}
+
+	if err = app.models.DB.DeleteMovie(id); err != nil {
+		app.logger.Error("unable to delete movie: ", zap.Error(err))
+	}
+
+	ok := jsonResp{
+		OK: true,
+	}
+
+	if err = app.writeJson(w, http.StatusOK, ok, "response"); err != nil {
+		app.logger.Error("failed to marshal json: ", zap.Error(err))
+	}
 }
 
 // TODO:
