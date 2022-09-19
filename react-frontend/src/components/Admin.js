@@ -22,7 +22,7 @@ export default function Admin(props) {
   }, [url]);
 
   // TOOD:
-  if (jwt === "") {
+  if (jwt === null) {
     navigate("/login");
     return;
   }

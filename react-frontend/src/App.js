@@ -18,13 +18,13 @@ export default function App() {
   };
 
   const logout = () => {
-    setJwt("");
+    setJwt(null);
     window.localStorage.removeItem("jwt");
   };
 
   let loginLink;
 
-  if (jwt === "") {
+  if (jwt === null) {
     loginLink = <Link to="/login">Login</Link>;
   } else {
     loginLink = (
@@ -66,7 +66,7 @@ export default function App() {
                 >
                   Genres
                 </Link>
-                {jwt !== "" && (
+                {jwt !== null && (
                   <>
                     <Link
                       to="/admin/movie/0"

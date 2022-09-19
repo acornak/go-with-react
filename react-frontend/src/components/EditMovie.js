@@ -60,7 +60,7 @@ export default function EditMovie(props) {
   }, [id, url]);
 
   // TODO:
-  if (jwt === "") {
+  if (jwt === null) {
     navigate("/login");
     return;
   }

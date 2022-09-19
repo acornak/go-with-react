@@ -52,32 +52,32 @@ func (app *application) checkToken(next http.Handler) http.Handler {
 
 		if err != nil {
 			app.logger.Error("invalid auth token: ", zap.Error(err))
-			app.errorJson(w, errors.New("unathorized"))
+			app.errorJson(w, errors.New("unathorized"), http.StatusForbidden)
 			return
 		}
 
 		if !claims.Valid(time.Now()) {
 			app.logger.Error("expired auth token: ", zap.Error(err))
-			app.errorJson(w, errors.New("unathorized"))
+			app.errorJson(w, errors.New("unathorized"), http.StatusForbidden)
 			return
 		}
 
 		if !claims.AcceptAudience("mydomain.com") {
 			app.logger.Error("invalid audience: ", zap.Error(err))
-			app.errorJson(w, errors.New("unathorized"))
+			app.errorJson(w, errors.New("unathorized"), http.StatusForbidden)
 			return
 		}
 
 		if claims.Issuer != "mydomain.com" {
 			app.logger.Error("invalid issuer: ", zap.Error(err))
-			app.errorJson(w, errors.New("unathorized"))
+			app.errorJson(w, errors.New("unathorized"), http.StatusForbidden)
 			return
 		}
 
 		userID, err := strconv.ParseInt(claims.Subject, 10, 64)
 		if err != nil {
 			app.logger.Error("couldnt extract userid: ", zap.Error(err))
-			app.errorJson(w, errors.New("unathorized"))
+			app.errorJson(w, errors.New("unathorized"), http.StatusForbidden)
 			return
 		}
 
