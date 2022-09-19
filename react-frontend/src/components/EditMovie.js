@@ -10,7 +10,8 @@ import Select from "./form-inputs/Select";
 import Alert from "./ui-components/Alert";
 import "./EditMovie.css";
 
-export default function EditMovie() {
+export default function EditMovie(props) {
+  const { jwt } = props;
   const { id } = useParams();
   const [movie, setMovie] = useState({
     id: "",
@@ -28,6 +29,12 @@ export default function EditMovie() {
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
   const url = `http://localhost:4000/`;
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + jwt,
+    },
+  };
 
   useEffect(() => {
     if (id > 0) {
@@ -51,6 +58,12 @@ export default function EditMovie() {
         });
     }
   }, [id, url]);
+
+  // TODO:
+  if (jwt === "") {
+    navigate("/login");
+    return;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -104,8 +117,10 @@ export default function EditMovie() {
     const data = new FormData(e.target);
     const payload = Object.fromEntries(data.entries());
 
+    console.log(config);
+
     axios
-      .post(url + "v1/admin/editmovie", JSON.stringify(payload))
+      .post(url + "v1/admin/editmovie", JSON.stringify(payload), config)
       .then(() => navigate("/admin"))
       .catch((err) => {
         setAlert({
@@ -144,7 +159,7 @@ export default function EditMovie() {
           label: "Yes",
           onClick: () => {
             axios
-              .get(url + `v1/admin/deletemovie/${id}`)
+              .get(url + `v1/admin/deletemovie/${id}`, config)
               .then(() => navigate("/admin"))
               .catch((err) => {
                 setAlert({

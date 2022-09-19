@@ -13,11 +13,9 @@ import Login from "./components/Login";
 export default function App() {
   const [jwt, setJwt] = useState("");
 
-  const handleJwtChange = (jwt) => {
-    setJwt(jwt);
+  const handleJwtChange = (token) => {
+    setJwt(token);
   };
-
-  console.log(jwt);
 
   const logout = () => {
     setJwt("");
@@ -90,8 +88,11 @@ export default function App() {
             <Routes>
               <Route path="/movies/:id" element={<Movie />} />
               <Route path="/movies" element={<Movies />} />
-              <Route path="/admin" element={<Admin />} />
-              <Route path="/admin/movie/:id" element={<EditMovie />} />
+              <Route path="/admin" element={<Admin jwt={jwt} />} />
+              <Route
+                path="/admin/movie/:id"
+                element={<EditMovie jwt={jwt} />}
+              />
               <Route path="/" element={<Home />} />
               <Route exact path="/genres" element={<Genres />} />
               <Route exact path="/genre/:genre_id" element={<Genre />} />

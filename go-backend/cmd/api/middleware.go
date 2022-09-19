@@ -68,7 +68,7 @@ func (app *application) checkToken(next http.Handler) http.Handler {
 			return
 		}
 
-		if claims.Issuer != "nydomain.com" {
+		if claims.Issuer != "mydomain.com" {
 			app.logger.Error("invalid issuer: ", zap.Error(err))
 			app.errorJson(w, errors.New("unathorized"))
 			return

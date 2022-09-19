@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-export default function Admin() {
+export default function Admin(props) {
+  const { jwt } = props;
+  const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
   const url = "http://localhost:4000/v1/movies";
@@ -18,6 +20,14 @@ export default function Admin() {
         console.log(err);
       });
   }, [url]);
+
+  // TOOD:
+  if (jwt === "") {
+    navigate("/login");
+    return;
+  }
+
+  console.log("zidan");
 
   return (
     <>
