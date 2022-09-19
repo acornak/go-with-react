@@ -11,7 +11,7 @@ import EditMovie from "./components/EditMovie";
 import Login from "./components/Login";
 
 export default function App() {
-  const [jwt, setJwt] = useState("");
+  const [jwt, setJwt] = useState(window.localStorage.getItem("jwt"));
 
   const handleJwtChange = (token) => {
     setJwt(token);
@@ -19,6 +19,7 @@ export default function App() {
 
   const logout = () => {
     setJwt("");
+    window.localStorage.removeItem("jwt");
   };
 
   let loginLink;
@@ -27,7 +28,7 @@ export default function App() {
     loginLink = <Link to="/login">Login</Link>;
   } else {
     loginLink = (
-      <Link to="/logout" onClick={() => logout()}>
+      <Link to="/login" onClick={() => logout()}>
         Logout
       </Link>
     );

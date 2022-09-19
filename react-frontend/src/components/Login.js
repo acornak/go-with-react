@@ -56,6 +56,7 @@ export default function Login(props) {
       .post(url + "v1/signin", JSON.stringify(payload))
       .then((res) => {
         handleJwtChange(res.data.response);
+        window.localStorage.setItem("jwt", res.data.response);
         navigate("/admin");
       })
       .catch((err) => {

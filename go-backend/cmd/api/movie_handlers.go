@@ -218,8 +218,3 @@ func (app *application) deleteMovie(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
-// TODO:
-func (app *application) searchMovies(w http.ResponseWriter, r *http.Request) {
-
-}
