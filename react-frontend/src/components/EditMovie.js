@@ -12,7 +12,6 @@ import "./EditMovie.css";
 
 export default function EditMovie() {
   const { id } = useParams();
-  const [error, setError] = useState(false);
   const [movie, setMovie] = useState({
     id: "",
     title: "",
@@ -47,7 +46,7 @@ export default function EditMovie() {
           });
         })
         .catch((err) => {
-          setError(true);
+          // todo:
           console.log(err);
         });
     }
@@ -107,18 +106,13 @@ export default function EditMovie() {
 
     axios
       .post(url + "v1/admin/editmovie", JSON.stringify(payload))
-      .then((res) => console.log(res))
+      .then(() => navigate("/admin"))
       .catch((err) => {
-        setError(true);
         setAlert({
           type: "alert-danger",
-          message: "Failed to save changes: " + err,
+          message: "Failed to save changes: " + err.response.data.error.message,
         });
       });
-
-    if (!error) {
-      navigate("/admin");
-    }
   };
 
   const handleChange = (e) => {
@@ -151,15 +145,15 @@ export default function EditMovie() {
           onClick: () => {
             axios
               .get(url + `v1/admin/deletemovie/${id}`)
-              .then((res) => console.log(res))
+              .then(() => navigate("/admin"))
               .catch((err) => {
-                setError(true);
                 setAlert({
                   type: "alert-danger",
-                  message: "Failed to delete movie: " + err,
+                  message:
+                    "Failed to delete movie: " +
+                    err.response.data.error.message,
                 });
               });
-            navigate("/admin");
           },
         },
         {
@@ -169,15 +163,6 @@ export default function EditMovie() {
       ],
     });
   };
-
-  if (error) {
-    return (
-      <>
-        <Alert alertType={alert.type} alertMessage={alert.message} />
-        <div>Oops, something went wrong...</div>
-      </>
-    );
-  }
 
   return (
     <>

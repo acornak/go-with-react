@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
 import Movies from "./components/Movies";
@@ -8,13 +8,43 @@ import Admin from "./components/Admin";
 import Genres from "./components/Genres";
 import Genre from "./components/Genre";
 import EditMovie from "./components/EditMovie";
+import Login from "./components/Login";
 
 export default function App() {
+  const [jwt, setJwt] = useState("");
+
+  const handleJwtChange = (jwt) => {
+    setJwt(jwt);
+  };
+
+  console.log(jwt);
+
+  const logout = () => {
+    setJwt("");
+  };
+
+  let loginLink;
+
+  if (jwt === "") {
+    loginLink = <Link to="/login">Login</Link>;
+  } else {
+    loginLink = (
+      <Link to="/logout" onClick={() => logout()}>
+        Logout
+      </Link>
+    );
+  }
+
+  console.log(jwt);
+
   return (
     <Router>
       <div className="container">
         <div className="row">
-          <h1 className="mt-3">Go Watch a Movie!</h1>
+          <div className="col mt-3">
+            <h1 className="mt-3">Go Watch a Movie!</h1>
+          </div>
+          <div className="col mt-3 text-end">{loginLink}</div>
           <hr />
           <hr className="mb-3" />
         </div>
@@ -37,18 +67,22 @@ export default function App() {
                 >
                   Genres
                 </Link>
-                <Link
-                  to="/admin/movie/0"
-                  className="list-group-item list-group-item-action"
-                >
-                  Add movie
-                </Link>
-                <Link
-                  to="/admin"
-                  className="list-group-item list-group-item-action"
-                >
-                  Manage Catalogue
-                </Link>
+                {jwt !== "" && (
+                  <>
+                    <Link
+                      to="/admin/movie/0"
+                      className="list-group-item list-group-item-action"
+                    >
+                      Add movie
+                    </Link>
+                    <Link
+                      to="/admin"
+                      className="list-group-item list-group-item-action"
+                    >
+                      Manage Catalogue
+                    </Link>
+                  </>
+                )}
               </div>
             </nav>
           </div>
@@ -61,6 +95,11 @@ export default function App() {
               <Route path="/" element={<Home />} />
               <Route exact path="/genres" element={<Genres />} />
               <Route exact path="/genre/:genre_id" element={<Genre />} />
+              <Route
+                exact
+                path="/login"
+                element={<Login handleJwtChange={handleJwtChange} />}
+              />
             </Routes>
           </div>
         </div>

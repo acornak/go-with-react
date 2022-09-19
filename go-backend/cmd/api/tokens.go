@@ -70,6 +70,5 @@ func (app *application) Signin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	app.writeJson(w, http.StatusOK, jwtBytes, "response")
-
+	app.writeJson(w, http.StatusOK, string(jwtBytes), "response")
 }
