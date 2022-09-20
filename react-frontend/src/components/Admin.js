@@ -7,9 +7,10 @@ export default function Admin(props) {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
-  const url = "http://localhost:4000/v1/movies";
 
   useEffect(() => {
+    const url = "http://localhost:4000/v1/movies";
+
     axios
       .get(url)
       .then((res) => {
@@ -19,7 +20,7 @@ export default function Admin(props) {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, []);
 
   // TOOD:
   if (jwt === null) {

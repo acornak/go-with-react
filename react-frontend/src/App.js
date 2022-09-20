@@ -9,6 +9,8 @@ import Genres from "./components/Genres";
 import Genre from "./components/Genre";
 import EditMovie from "./components/EditMovie";
 import Login from "./components/Login";
+import GraphQL from "./components/GraphQL";
+import MovieGraphQL from "./components/MovieGraphQL";
 
 export default function App() {
   const [jwt, setJwt] = useState(window.localStorage.getItem("jwt"));
@@ -82,12 +84,19 @@ export default function App() {
                     </Link>
                   </>
                 )}
+                <Link
+                  to="/graphql"
+                  className="list-group-item list-group-item-action"
+                >
+                  GraphQL
+                </Link>
               </div>
             </nav>
           </div>
           <div className="col-md-10">
             <Routes>
               <Route path="/movies/:id" element={<Movie />} />
+              <Route path="/moviesgraphql/:id" element={<MovieGraphQL />} />
               <Route path="/movies" element={<Movies />} />
               <Route path="/admin" element={<Admin jwt={jwt} />} />
               <Route
@@ -102,6 +111,7 @@ export default function App() {
                 path="/login"
                 element={<Login handleJwtChange={handleJwtChange} />}
               />
+              <Route exact path="/graphql" element={<GraphQL />} />
             </Routes>
           </div>
         </div>
