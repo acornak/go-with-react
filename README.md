@@ -1,4 +1,8 @@
-# Go with React
+# Movie database
+
+This is simple application to demonstrate working with Go (backend), React (front-end) and PostgreSQL as database.
+
+You can browse movies, login to admin part using `me@here.com` as user name and `password` as password, manage movie collection (add movie, edit movie, delete movie). That's it, nothing special... :)
 
 ## How to run backend?
 
