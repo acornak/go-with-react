@@ -3,6 +3,7 @@ USER="admin"
 PASS="password"
 PORT=5432
 DSN="host=localhost port=5432 user=admin password=password dbname=movies sslmode=disable timezone=UTC connect_timeout=5"
+export ADMIN_PASSWORD := password
 
 ## build: Build binary
 build: 

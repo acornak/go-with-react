@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"go-backend/models"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/pascaldekloe/jwt"
@@ -24,7 +25,7 @@ type Credentials struct {
 var validUser = models.User{
 	ID:       10,
 	Email:    "me@here.com",
-	Password: mockPassword("password"),
+	Password: mockPassword(os.Getenv("ADMIN_PASSWORD")),
 }
 
 func mockPassword(password string) string {
