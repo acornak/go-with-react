@@ -27,11 +27,15 @@ export default function App() {
   let loginLink;
 
   if (jwt === null) {
-    loginLink = <Link to="/login">Login</Link>;
+    loginLink = (
+      <Link to="/login">
+        <div className="btn btn-primary">Login</div>
+      </Link>
+    );
   } else {
     loginLink = (
       <Link to="/login" onClick={() => logout()}>
-        Logout
+        <div className="btn btn-secondary">Logout</div>
       </Link>
     );
   }
@@ -45,7 +49,7 @@ export default function App() {
           <div className="col mt-3">
             <h1 className="mt-3">Go Watch a Movie!</h1>
           </div>
-          <div className="col mt-3 text-end">{loginLink}</div>
+          <div className="col mt-3 text-end ">{loginLink}</div>
           <hr />
           <hr className="mb-3" />
         </div>
@@ -68,6 +72,12 @@ export default function App() {
                 >
                   Genres
                 </Link>
+                <Link
+                  to="/graphql"
+                  className="list-group-item list-group-item-action"
+                >
+                  GraphQL
+                </Link>
                 {jwt !== null && (
                   <>
                     <Link
@@ -84,12 +94,6 @@ export default function App() {
                     </Link>
                   </>
                 )}
-                <Link
-                  to="/graphql"
-                  className="list-group-item list-group-item-action"
-                >
-                  GraphQL
-                </Link>
               </div>
             </nav>
           </div>
