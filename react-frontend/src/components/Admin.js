@@ -28,8 +28,6 @@ export default function Admin(props) {
     return;
   }
 
-  console.log("zidan");
-
   return (
     <>
       <h2>Manage Catalogue</h2>

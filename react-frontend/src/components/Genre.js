@@ -15,7 +15,6 @@ export default function Genre() {
     axios
       .get(url)
       .then((res) => {
-        console.log(res);
         setMovies(res.data.movies);
       })
       .catch((err) => {

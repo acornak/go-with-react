@@ -66,7 +66,8 @@ CREATE TABLE public.movies (
     rating integer,
     mpaa_rating character varying,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    poster character varying
 );
 
 

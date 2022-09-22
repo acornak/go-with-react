@@ -117,8 +117,6 @@ export default function EditMovie(props) {
     const data = new FormData(e.target);
     const payload = Object.fromEntries(data.entries());
 
-    console.log(config);
-
     axios
       .post(url + "v1/admin/editmovie", JSON.stringify(payload), config)
       .then(() => navigate("/admin"))

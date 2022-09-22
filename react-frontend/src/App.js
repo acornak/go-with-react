@@ -40,8 +40,6 @@ export default function App() {
     );
   }
 
-  console.log(jwt);
-
   return (
     <Router>
       <div className="container">
