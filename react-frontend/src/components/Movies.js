@@ -5,11 +5,10 @@ import axios from "axios";
 export default function Movies() {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
-  const url = "http://localhost:4000/v1/movies";
 
   useEffect(() => {
     axios
-      .get(url)
+      .get(`${process.env.REACT_APP_API_URL}/v1/movies`)
       .then((res) => {
         setMovies(res.data.movies);
       })
@@ -17,7 +16,7 @@ export default function Movies() {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, []);
 
   return (
     <>

@@ -28,7 +28,6 @@ export default function EditMovie(props) {
   });
   const [errors, setErrors] = useState([]);
   const navigate = useNavigate();
-  const url = `http://localhost:4000/`;
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -39,7 +38,7 @@ export default function EditMovie(props) {
   useEffect(() => {
     if (id > 0) {
       axios
-        .get(url + `v1/movie/${id}`)
+        .get(`${process.env.REACT_APP_API_URL}/v1/movie/${id}`)
         .then((res) => {
           const release_date = new Date(res.data.movie.release_date);
           setMovie({
@@ -57,7 +56,7 @@ export default function EditMovie(props) {
           console.log(err);
         });
     }
-  }, [id, url]);
+  }, [id]);
 
   // TODO:
   if (jwt === null) {
@@ -118,7 +117,11 @@ export default function EditMovie(props) {
     const payload = Object.fromEntries(data.entries());
 
     axios
-      .post(url + "v1/admin/editmovie", JSON.stringify(payload), config)
+      .post(
+        `${process.env.REACT_APP_API_URL}/v1/admin/editmovie`,
+        JSON.stringify(payload),
+        config
+      )
       .then(() => navigate("/admin"))
       .catch((err) => {
         setAlert({
@@ -157,7 +160,10 @@ export default function EditMovie(props) {
           label: "Yes",
           onClick: () => {
             axios
-              .get(url + `v1/admin/deletemovie/${id}`, config)
+              .get(
+                `${process.env.REACT_APP_API_URL}/v1/admin/deletemovie/${id}`,
+                config
+              )
               .then(() => navigate("/admin"))
               .catch((err) => {
                 setAlert({

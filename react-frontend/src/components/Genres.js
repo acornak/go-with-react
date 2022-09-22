@@ -5,11 +5,10 @@ import axios from "axios";
 export default function Genres() {
   const [genres, setGenres] = useState([]);
   const [error, setError] = useState(false);
-  const url = "http://localhost:4000/v1/genres";
 
   useEffect(() => {
     axios
-      .get(url)
+      .get(`${process.env.REACT_APP_API_URL}/v1/genres`)
       .then((res) => {
         setGenres(res.data.genres);
       })
@@ -17,7 +16,7 @@ export default function Genres() {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, []);
 
   return (
     <>

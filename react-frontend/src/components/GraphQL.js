@@ -7,7 +7,6 @@ export default function GraphQL() {
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const url = "http://localhost:4000/v1/graphql";
 
   useEffect(() => {
     const payload = `
@@ -23,7 +22,7 @@ export default function GraphQL() {
     `;
 
     axios
-      .post(url, payload)
+      .post(`${process.env.REACT_APP_API_URL}/v1/graphql`, payload)
       .then((res) => {
         setMovies(res.data.data.list);
       })
@@ -31,7 +30,7 @@ export default function GraphQL() {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, []);
 
   const performSearch = (query) => {
     const payload = `
@@ -47,7 +46,7 @@ export default function GraphQL() {
     `;
 
     axios
-      .post(url, payload)
+      .post(`${process.env.REACT_APP_API_URL}/v1/graphql`, payload)
       .then((res) => {
         const found = res.data.data.search;
         if (found.length > 0) {

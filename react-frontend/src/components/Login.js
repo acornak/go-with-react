@@ -18,9 +18,6 @@ export default function Login(props) {
   });
   const navigate = useNavigate();
 
-  // TODO: move
-  const url = `http://localhost:4000/`;
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prevState) => ({
@@ -53,7 +50,10 @@ export default function Login(props) {
     const payload = Object.fromEntries(data.entries());
 
     axios
-      .post(url + "v1/signin", JSON.stringify(payload))
+      .post(
+        `${process.env.REACT_APP_API_URL}/v1/signin`,
+        JSON.stringify(payload)
+      )
       .then((res) => {
         handleJwtChange(res.data.response);
         window.localStorage.setItem("jwt", res.data.response);

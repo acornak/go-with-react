@@ -8,9 +8,8 @@ export default function Movie() {
   const [error, setError] = useState(false);
 
   useEffect(() => {
-    const url = `http://localhost:4000/v1/movie/${id}`;
     axios
-      .get(url)
+      .get(`${process.env.REACT_APP_API_URL}/v1/movie/${id}`)
       .then((res) => {
         setMovie(res.data.movie);
       })

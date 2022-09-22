@@ -9,11 +9,10 @@ export default function Genre() {
   const { genre_id } = useParams();
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState(false);
-  const url = `http://localhost:4000/v1/movies/${genre_id}`;
 
   useEffect(() => {
     axios
-      .get(url)
+      .get(`${process.env.REACT_APP_API_URL}/v1/movies/${genre_id}`)
       .then((res) => {
         setMovies(res.data.movies);
       })
@@ -21,7 +20,7 @@ export default function Genre() {
         setError(true);
         console.log(err);
       });
-  }, [url]);
+  }, [genre_id]);
 
   return (
     <>
